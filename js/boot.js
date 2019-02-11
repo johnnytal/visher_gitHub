@@ -1,4 +1,4 @@
-window.onload = start;
+//window.onload = start;
 document.addEventListener("deviceready", start, false);
 
 function start(){
@@ -19,7 +19,7 @@ var boot = function(game){};
 boot.prototype = {
     create: function(){
     	
-    	game.stage.backgroundColor = '#000000';
+    	game.stage.backgroundColor = '#040404;
     	
         if (this.game.device.desktop){
             this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
