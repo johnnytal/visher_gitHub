@@ -37,7 +37,7 @@ function readAccel(acceleration){
 }
 
 function initPlugIns(){
-	navigator.accelerometer.watchAcceleration(readAccel, onError, { frequency: 5 });
+	try{navigator.accelerometer.watchAcceleration(readAccel, onError, { frequency: 5 });} catch(e){}
 
     try{window.plugins.insomnia.keepAwake();} catch(e){} // keep awake
     try{StatusBar.hide();} catch(e){} // hide status bar
