@@ -21,18 +21,27 @@ function readAccel(acceleration){
 		resetSounds = false;
 		sound2.play();
 		window.plugins.flashlight.switchOn();
+		
+		setTimeout(function(){
+			window.plugins.flashlight.switchOff();
+		}, 1000);
+		
 		game.stage.backgroundColor = '#ff00ff';
 	}
 	else if (accelX > 6.5 && !sound1.isPlaying && resetSounds){
 		resetSounds = false;
 		sound1.play();
 		window.plugins.flashlight.switchOn();
+		
+		setTimeout(function(){
+			window.plugins.flashlight.switchOff();
+		}, 1000);
+		
 		game.stage.backgroundColor = '#00ff00';
 	}
 	
-	else if (accelX < 5 && accelX > -5){
+	else if (accelX < 3 && accelX > -3){
 		resetSounds = true;
-		window.plugins.flashlight.switchOff();
 	}
 }
 
