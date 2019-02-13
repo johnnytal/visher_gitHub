@@ -1,6 +1,7 @@
 var visherMain = function(game){
 	accelX = 0;
 	resetSounds = true;
+	GO_NUM = 7;
 };
 
 visherMain.prototype = {
@@ -17,7 +18,7 @@ function readAccel(acceleration){
 	
 	angleText.text = accelX;
 	
-	if (accelX < -6.5 && !sound2.isPlaying && resetSounds){
+	if (accelX < -(GO_NUM) && !sound2.isPlaying && resetSounds){
 		resetSounds = false;
 		sound2.play();
 		window.plugins.flashlight.switchOn();
@@ -28,7 +29,7 @@ function readAccel(acceleration){
 		
 		game.stage.backgroundColor = '#ff00ff';
 	}
-	else if (accelX > 6.5 && !sound1.isPlaying && resetSounds){
+	else if (accelX > GO_NUM && !sound1.isPlaying && resetSounds){
 		resetSounds = false;
 		sound1.play();
 		window.plugins.flashlight.switchOn();
@@ -40,8 +41,9 @@ function readAccel(acceleration){
 		game.stage.backgroundColor = '#00ff00';
 	}
 	
-	else if (accelX < 3 && accelX > -3){
+	else if (accelX < Math.floor(GO_NUM / 2) && accelX > -(Math.floor(GO_NUM / 2))){
 		resetSounds = true;
+		game.stage.backgroundColor = '#000000';
 	}
 }
 
