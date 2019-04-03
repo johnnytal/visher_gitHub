@@ -27,6 +27,7 @@ visherMain.prototype = {
     	
         debug_text = game.add.text(250, 50, "Vish it!", {font: '32px', fill: 'white'});
         
+        loadSounds();
         initPlugIns();
 
     	window.addEventListener("devicemotion", readVisherAccel, true);
@@ -58,6 +59,11 @@ function flashVisher(_color){
 	setTimeout(function(){
 		window.plugins.flashlight.switchOff();
 	}, 100);	
+}
+
+function loadSounds(){
+	huSfx = game.add.audio('hu', 1);
+	haSfx = game.add.audio('ha', 1);
 }
 
 function initPlugIns(){
