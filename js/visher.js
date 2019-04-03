@@ -1,6 +1,5 @@
 var visherMain = function(game){
-	resetVisher = true;
-	GO_NUM = 6.5;
+	GO_NUM = 25;
 	
 	HU_COLOR = '#ff00ff';
 	HA_COLOR = '#f0ff0f';
@@ -27,33 +26,28 @@ visherMain.prototype = {
     	bg.alpha = 0.6;
     	
         debug_text = game.add.text(250, 50, "Vish it!", {font: '32px', fill: 'white'});
+        
+        initPlugIns();
 
     	window.addEventListener("devicemotion", readVisherAccel, true);
     },
     
     update: function(){
-    	if (!resetVisher && wiper.angle < 20 && wiper.angle > - 20){
-    		resetVisher = true;
-    	}
+    	if (wiper.angle < -GO_NUM && game.stage.backgroundColor != 16711935){
+			haSfx.play();
+			flashVisher(HU_COLOR);	
+		}
     	
-    	if (resetVisher){    	
-	    	if (wiper.angle < -25 && game.stage.backgroundColor != 16711935){
-				haSfx.play();
-				flashVisher(HU_COLOR);	
-    		}
-	    	
-	    	else if (wiper.angle > 25 && game.stage.backgroundColor != 15793935){    		
-				huSfx.play();
-				flashVisher(HA_COLOR);
-			}	
-    	}
-    	
+    	else if (wiper.angle > GO_NUM && game.stage.backgroundColor != 15793935){    		
+			huSfx.play();
+			flashVisher(HA_COLOR);
+		}	
 	}
 };
 
 function readVisherAccel(event){
 	wiper.angle = event.accelerationIncludingGravity.x * 3;
-	debug_text.text = roundIt(event.accelerationIncludingGravity.x);
+	debug_text.text = Math.round(event.accelerationIncludingGravity.x * 100) / 100;
 }
 
 function flashVisher(_color){
@@ -61,9 +55,13 @@ function flashVisher(_color){
 	setTimeout(function(){navigator.vibrate(35);}, 20);	
 	game.stage.backgroundColor = _color;
 	
-	resetVisher = false;
-	
 	setTimeout(function(){
 		window.plugins.flashlight.switchOff();
 	}, 100);	
+}
+
+function initPlugIns(){
+    try{window.plugins.insomnia.keepAwake();} catch(e){} // keep device awake
+    try{StatusBar.hide();} catch(e){} // hide status bar
+    try{window.androidVolume.setMusic(100, false);} catch(e){} // change device media volume to maximum
 }
