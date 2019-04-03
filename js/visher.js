@@ -1,69 +1,69 @@
 var visherMain = function(game){
-	accelX = 0;
-	resetSounds = true;
-	GO_NUM = 7;
+	resetVisher = true;
+	GO_NUM = 6.5;
+	
+	HU_COLOR = '#ff00ff';
+	HA_COLOR = '#f0ff0f';
 };
 
 visherMain.prototype = {
     create: function(){ 
-        angleText = game.add.text(500, 20, "Visher!", {font: '26px', fill: 'white'});
+    	game.stage.backgroundColor = '#ff4502';
+    	
+        wipers = game.add.group();
+		wipers.enableBody = true;
+		wipers.physicsBodyType = Phaser.Physics.ARCADE;
+		
+		wiper = wipers.create(0, 0, 'wiper');
 
-		initPlugIns();
-		loadSounds();
-    }
+        wiper.y = HEIGHT / 2 + wiper.height / 4;
+        wiper.x = (WIDTH / 2 - wiper.width / 2)  + 500;
+        
+        wiper.anchor.set(1, .5);
+        
+        wiper.body.collideWorldBounds = true;
+
+    	bg = game.add.image(0, 0, 'bg');
+    	bg.alpha = 0.6;
+    	
+        debug_text = game.add.text(250, 50, "Vish it!", {font: '32px', fill: 'white'});
+
+    	window.addEventListener("devicemotion", readVisherAccel, true);
+    },
+    
+    update: function(){
+    	if (!resetVisher && wiper.angle < 20 && wiper.angle > - 20){
+    		resetVisher = true;
+    	}
+    	
+    	if (resetVisher){    	
+	    	if (wiper.angle < -25 && game.stage.backgroundColor != 16711935){
+				haSfx.play();
+				flashVisher(HU_COLOR);	
+    		}
+	    	
+	    	else if (wiper.angle > 25 && game.stage.backgroundColor != 15793935){    		
+				huSfx.play();
+				flashVisher(HA_COLOR);
+			}	
+    	}
+    	
+	}
 };
 
-function readAccel(acceleration){
-	accelX = Math.round(acceleration.x);
+function readVisherAccel(event){
+	wiper.angle = event.accelerationIncludingGravity.x * 3;
+	debug_text.text = roundIt(event.accelerationIncludingGravity.x);
+}
+
+function flashVisher(_color){
+	window.plugins.flashlight.switchOn();
+	setTimeout(function(){navigator.vibrate(35);}, 20);	
+	game.stage.backgroundColor = _color;
 	
-	angleText.text = accelX;
+	resetVisher = false;
 	
-	if (accelX < -(GO_NUM) && !sound2.isPlaying && resetSounds){
-		resetSounds = false;
-		sound2.play();
-		window.plugins.flashlight.switchOn();
-		
-		setTimeout(function(){
-			window.plugins.flashlight.switchOff();
-		}, 1000);
-		
-		game.stage.backgroundColor = '#ff00ff';
-	}
-	else if (accelX > GO_NUM && !sound1.isPlaying && resetSounds){
-		resetSounds = false;
-		sound1.play();
-		window.plugins.flashlight.switchOn();
-		
-		setTimeout(function(){
-			window.plugins.flashlight.switchOff();
-		}, 1000);
-		
-		game.stage.backgroundColor = '#00ff00';
-	}
-	
-	else if (accelX < Math.floor(GO_NUM / 2) && accelX > -(Math.floor(GO_NUM / 2))){
-		resetSounds = true;
-		game.stage.backgroundColor = '#000000';
-	}
+	setTimeout(function(){
+		window.plugins.flashlight.switchOff();
+	}, 100);	
 }
-
-function initPlugIns(){
-	try{navigator.accelerometer.watchAcceleration(readAccel, onError, { frequency: 5 });} catch(e){}
-
-    try{window.plugins.insomnia.keepAwake();} catch(e){} // keep awake
-    try{StatusBar.hide();} catch(e){} // hide status bar
-    try{window.androidVolume.setMusic(100, false);} catch(e){} // max media volume
-}
-
-function loadSounds(){
-	sound1 = game.add.audio('hu', 1, false);
-	sound2 = game.add.audio('ha', 1, false);
-}
-
-function roundIt(_num){
-	return Math.round(_num * 100) / 100;
-}
-
-function onError() {
-    alert('Sorry, No acceleration reading detected!');
-};
